@@ -1,0 +1,6 @@
+---
+# vars file for verizon-project
+  disk: "/dev/sdd"
+  options: "/verizon-data-shared-drive"
+  fstyp: "xfs"
+

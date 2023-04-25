@@ -1,0 +1,9 @@
+---
+# tasks file for verizon-project
+ - name: first tasks
+   import_tasks: serverconfig.yml
+   when: ansible_nodename== 'node3'
+
+ - name: second tasks
+   import_tasks: clientconfig.yml
+   when: ansible_nodename == 'node1' or ansible_nodename == 'node2'

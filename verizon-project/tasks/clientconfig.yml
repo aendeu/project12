@@ -1,0 +1,18 @@
+  - name: install the nfs-utils
+    dnf:
+     name: nfs-utils
+     state: latest
+
+  - name: create the mount point
+    file:
+     path: /verizon-client
+     state: directoty
+
+  - name: permanently mount in fstab
+    mount:
+     path: /verizon-client
+     src: node3:/verizon-data-shared-drive
+     fstype: nfs
+     state: mounted
+
+

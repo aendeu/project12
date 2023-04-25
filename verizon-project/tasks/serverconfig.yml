@@ -1,0 +1,56 @@
+  - name: format the drive sdd
+    filesystem:
+       fstype: "{{ fstyp }}"
+       dev: "{{ disk }}"
+
+  - name: create the mount point
+    file:
+      path: "{{ options }}"
+      state: directory
+      mode: '0777'
+
+
+  - name: drive mounted
+    mount:
+     path: "{{ options }}"
+     src: "{{ disk }}"
+     fstype: "{{ fstyp }}"
+     state: mounted
+
+
+  - name: install nfs-utils
+    dnf:
+     name: nfs-utils
+     state: present
+  - name: enable the services
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    loop:
+      - nfs-server
+      - rpcbind
+
+
+  - name: allow the service on the firewall
+    firewalld:
+     service: "{{ item }}"
+     prmanent: true
+     state: enabled
+     immediate: true
+    loop:
+     - nfs
+     - rpc-bind
+     - mountd
+
+  - name: enforce selinux
+    selinux:
+      policy: targeted
+      state: enforcing
+
+  - name: modify the/exports
+    lineinfile:
+     path: /etc/exports
+     line: "{{ options }} node*(rw,sync,no_root_squash)"
+    notify: restart NFS server
+
